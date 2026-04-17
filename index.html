@@ -1,162 +1,115 @@
-<!DOCTYPE html> 
-<html lang="pt-br">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Caracterização | Lab Misturas Asfálticas</title>  
-    <link rel="stylesheet" href="style.css">  
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reserva LMP</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="pagina-interna">
-    <header class="main-header" style="background: linear-gradient(135deg, #1A4A5A 0%, #2a6f84 100%); padding: 16px 0; color: white; border-bottom: 4px solid #143a46; position: relative; overflow: hidden;"> 
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 50px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;"> 
-            <img src="img/foto.png" alt="Logotipo" style="width: 150px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.25);"> 
-            <div style="text-align: left;"> 
-                <h1 style="margin: 0; font-size: 2rem; font-weight: 900;">Caracterização de Materiais</h1> 
-                <p style="margin: 5px 0; font-size: 1.1rem; color: #FFD27D;">Laboratório de Misturas Asfálticas - LMP</p> 
-            </div> 
-        </div> 
-    </header> 
+<body>
 
-    <main class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;"> 
+    <header class="main-header">
+        <div class="logo-area">
+            <h1>LMP - Laboratório de Misturas Pavimentares</h1>
+            <p>Universidade Federal do Ceará - DET</p>
+        </div>
+        <nav class="nav-tabs">
+            <button class="tab-link active" onclick="openTab(event, 'inicio')">INÍCIO</button>
+            <button class="tab-link" onclick="openTab(event, 'caracterizacao')">CARACTERIZAÇÃO</button>
+            <button class="tab-link" onclick="openTab(event, 'ensaios')">ENSAIOS</button>
+            <button class="tab-link" onclick="openTab(event, 'aulas')">AULAS</button>
+        </nav>
+    </header>
+
+    <main class="container">
         
-        <a href="index.html" class="btn-voltar" style="display: inline-block; margin-bottom: 20px; padding: 10px 20px; background: #eee; border-radius: 5px; text-decoration: none; color: #333; font-weight: bold;">← Voltar ao Início</a>
-
-        <section class="info-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;"> 
-            <div class="card info-geral" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
-                <h3><span class="icon">ℹ️</span> INFORMAÇÕES GERAIS</h3> 
-                <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #555;"> 
-                    <li style="margin-bottom: 8px;"><strong>1.</strong> Utilizar EPIs obrigatórios.</li> 
-                    <li style="margin-bottom: 8px;"><strong>2.</strong> Manter o laboratório limpo.</li> 
-                    <li style="margin-bottom: 8px;"><strong>3.</strong> Reservas até sexta 12:00 para a semana seguinte.</li> 
-                </ul> 
-            </div> 
-            <div class="card instrucoes" id="container-instrucoes" style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
-                <h3><span class="icon">📝</span> INSTRUÇÕES</h3> 
-                <p id="texto-instrucoes" style="font-size: 0.9rem; color: #555;">Selecione um ensaio nos cards abaixo para liberar a agenda.</p> 
-            </div> 
-        </section> 
-
-        <section class="booking-section card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> 
-            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;"> 
-                <div class="input-group"> 
-                    <label>Nome Completo</label> 
-                    <input type="text" id="nome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"> 
-                </div> 
-                <div class="input-group"> 
-                    <label>Data do Uso</label> 
-                    <input type="date" id="data" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"> 
-                </div> 
-                <input type="hidden" id="categoria-display" value="CARACTERIZAÇÃO DE MATERIAIS">
-                <input type="hidden" id="maquina" value="">
-            </div> 
-
-            <h4 class="section-title-cards">➤ SELECIONE O PROCEDIMENTO</h4> 
-            
-            <div id="container-cards-padrao" class="cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;"> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Dosagem Marshall', 'Estufas, Misturador, Compactador', true, 'img/norma1.pdf')"> 
-                    <img src="img/Marshall.jpeg" style="width:100%; height:120px; object-fit: cover; border-radius: 8px;"> 
-                    <div class="info"><h5>1 - Dosagem Marshall</h5></div>
-                </div> 
-                <div class="ensaio-card" onclick="selecionarEnsaio(this, 'Densidade e absorção', 'Picnômetros, Balança hidrostática', false, 'img/norma7.pdf')"> 
-                    <img src="img/dens.jpeg" style="width:100%; height:120px; object-fit: cover; border-radius: 8px;"> 
-                    <div class="info"><h5>7 - Densidade e absorção</h5></div> 
-                </div>
-                </div> 
-
-            <div id="container-detalhes" class="detalhes-ensaio" style="display:none; margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;"> 
-                <div id="opcoes-marshall" style="display:none; margin-bottom: 10px;"> 
-                    <label>Estado da Mistura:</label> 
-                    <button class="btn-opcao" onclick="definirSubtipo('Massa Solta', this)">Massa Solta</button> 
-                    <button class="btn-opcao" onclick="definirSubtipo('Mistura Compactada', this)">Mistura Compactada</button> 
-                </div> 
-                <label>Qtd. Amostras:</label> 
-                <input type="number" id="qtd-amostras" value="1" min="1" onchange="atualizarDadosFinais()"> 
-            </div> 
-
-            <div id="caixa-equipamentos" class="equipamentos-info" style="display:none; margin-top: 15px; color: #d35400;"> 
-                <h4>🛠️ Equipamentos: <span id="lista-equipamentos" style="font-weight: normal; color: #555;"></span></h4> 
-            </div> 
-        </section> 
-
-        <section class="table-section" style="margin-top: 30px;"> 
-            <table id="tabela-horarios" style="width:100%; border-collapse: collapse;"> 
-                <thead> 
-                    <tr style="background: #1A4A5A; color: white;">
-                        <th style="padding: 10px;">Horário</th>
-                        <th>Status</th>
-                        <th>Selecionar</th>
-                    </tr> 
-                </thead> 
-                <tbody id="corpo-agenda"></tbody> 
-            </table> 
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="reservarSelecionados()" style="background: #1A4A5A; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold;">Confirmar Reserva</button>
+        <section id="inicio" class="tab-content active">
+            <div class="welcome-card">
+                <h2>Bem-vindo ao Sistema de Reservas</h2>
+                <p>O LMP é um espaço destinado à pesquisa e ensino. Siga as orientações abaixo para o uso correto:</p>
+                <ul class="instrucoes-lista">
+                    <li>As reservas devem ser feitas com no mínimo 24h de antecedência.</li>
+                    <li>O uso da Estufa é compartilhado, mas as dosagens têm prioridade.</li>
+                    <li>Mantenha a organização e limpeza após o término dos ensaios.</li>
+                    <li>Dúvidas: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a></li>
+                </ul>
             </div>
-        </section> 
-    </main> 
+        </section>
 
-    <script>
-        let ensaioSelecionado = ""; 
-        let subtipoSelecionado = ""; 
+        <section id="caracterizacao" class="tab-content">
+            <h3 class="section-title">➤ SELECIONE A CARACTERIZAÇÃO</h3>
+            <div class="cards-container" id="container-caracterizacao">
+                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Dosagem Marshall', 'Estufa, Compactador Marshall', 'img/dnit-043.pdf')">
+                    <img src="img/Marshall.jpeg" alt="Marshall">
+                    <div class="info"><h5>1 - Dosagem Marshall</h5></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Secagem', 'Estufa', '#')">
+                    <img src="img/estufa.jpeg" alt="Secagem">
+                    <div class="info"><h5>13 - Secagem de material</h5></div>
+                </div>
+            </div>
+        </section>
 
-        // 1. Carrega a agenda automaticamente ao abrir a página
-        window.addEventListener('load', () => {
-            carregarHorarios();
-        });
+        <section id="ensaios" class="tab-content">
+            <h3 class="section-title">➤ RESERVA DE EQUIPAMENTOS ESPECÍFICOS</h3>
+            <div class="cards-container">
+                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Prensa Lottman', 'Prensa, Banho-maria', '#')">
+                    <div class="info"><h5>Resistência à Tração (Lottman)</h5></div>
+                </div>
+                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Módulo de Resiliência', 'Máquina Universal', '#')">
+                    <div class="info"><h5>Módulo de Resiliência</h5></div>
+                </div>
+                </div>
+        </section>
 
-        function carregarHorarios() {  
-            const corpo = document.getElementById('corpo-agenda'); 
-            let html = '';  
-            for (let h = 7; h <= 16; h++) {  
-                const intervalo = `${h.toString().padStart(2, '0')}:00 - ${(h + 1).toString().padStart(2, '0')}:00`;  
-                html += `<tr> 
-                            <td style="padding: 10px; border-bottom: 1px solid #eee;">${intervalo}</td> 
-                            <td style="color: green;">Disponível</td> 
-                            <td style="text-align: center;"><input type="checkbox" name="selecionar-hora" value="${intervalo}"></td> 
-                         </tr>`;  
-            } 
-            corpo.innerHTML = html;  
-        } 
+        <section id="aulas" class="tab-content">
+            <h3 class="section-title">➤ RESERVA PARA AULAS (GRADUAÇÃO/PÓS)</h3>
+            <div class="form-aula">
+                <label>Disciplina:</label>
+                <input type="text" id="disciplina-aula" placeholder="Ex: Infraestrutura de Transportes">
+                <p>Selecione os horários na agenda abaixo para bloquear o laboratório para a turma.</p>
+            </div>
+        </section>
 
-        function selecionarEnsaio(elemento, nome, equipamentos, ehMarshall, link) { 
-            document.querySelectorAll('.ensaio-card').forEach(c => c.style.border = "1px solid #ddd");
-            elemento.style.border = "3px solid #1A4A5A";
-            
-            ensaioSelecionado = nome; 
-            document.getElementById('container-detalhes').style.display = "block"; 
-            document.getElementById('opcoes-marshall').style.display = ehMarshall ? "block" : "none"; 
-            document.getElementById('caixa-equipamentos').style.display = "block"; 
-            document.getElementById('lista-equipamentos').innerText = equipamentos; 
-            document.getElementById('texto-instrucoes').innerText = "Você selecionou: " + nome;
-            atualizarDadosFinais(); 
-        } 
+        <div id="area-reserva" class="reserva-footer" style="display:none;">
+            <hr>
+            <div class="form-grid-inputs">
+                <div class="input-group">
+                    <label>Seu Nome</label>
+                    <input type="text" id="nome" placeholder="Seu nome completo">
+                </div>
+                <div class="input-group">
+                    <label>Orientador</label>
+                    <input type="text" id="orientador" placeholder="Nome do Professor">
+                </div>
+                <div class="input-group">
+                    <label>Data do Uso</label>
+                    <input type="date" id="data">
+                </div>
+            </div>
 
-        function definirSubtipo(tipo, btn) {
-            document.querySelectorAll('.btn-opcao').forEach(b => b.style.background = "#eee");
-            btn.style.background = "#FFD27D";
-            subtipoSelecionado = " - " + tipo;
-            atualizarDadosFinais();
-        }
+            <div id="detalhes-selecao" class="detalhes-ensaio">
+                <p id="info-equipamentos"></p>
+            </div>
 
-        function atualizarDadosFinais() { 
-            const qtd = document.getElementById('qtd-amostras').value; 
-            const cat = document.getElementById('categoria-display').value;
-            document.getElementById('maquina').value = `[${cat}] ${ensaioSelecionado}${subtipoSelecionado} (${qtd} amostras)`; 
-        }
+            <div class="action-bar">
+                <input type="password" id="senha-lab" placeholder="Senha do LAB">
+                <button onclick="reservarLote()" class="btn-confirmar-final">Confirmar Reserva</button>
+            </div>
 
-        function reservarSelecionados() {
-            const nome = document.getElementById('nome').value;
-            const data = document.getElementById('data').value;
-            const horas = document.querySelectorAll('input[name="selecionar-hora"]:checked');
+            <div class="table-section">
+                <table>
+                    <thead>
+                        <tr><th>Horário</th><th>Status</th><th>Selecionar</th></tr>
+                    </thead>
+                    <tbody id="corpo-agenda"></tbody>
+                </table>
+            </div>
+        </div>
 
-            if (!nome || !data || !ensaioSelecionado || horas.length === 0) {
-                alert("Preencha todos os campos, escolha um ensaio e pelo menos um horário!");
-                return;
-            }
-            alert("Reserva solicitada com sucesso para " + ensaioSelecionado);
-            // Aqui chamaria sua função do script.js original
-        }
-    </script>
-</body> 
+    </main>
+
+    <input type="hidden" id="item-selecionado">
+    <script src="script.js"></script>
+</body>
 </html>
