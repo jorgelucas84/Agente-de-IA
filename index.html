@@ -1,115 +1,187 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Reserva LMP</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de agendamento do Laboratório de Misturas Asfálticas - LMP/UFC">
+  <title>Agendamento | Lab Misturas Asfálticas - LMP/UFC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo-area">
-            <h1>LMP - Laboratório de Misturas Pavimentares</h1>
-            <p>Universidade Federal do Ceará - DET</p>
+  <header class="header-main" role="banner">
+    <div class="header-bg-overlay" aria-hidden="true"></div>
+    <div class="header-container">
+      <img src="img/foto.png" alt="Logotipo do Laboratório de Misturas Asfálticas" class="header-logo">
+      <div class="header-text">
+        <h1 class="header-title">Sistema de Agendamento</h1>
+        <p class="header-subtitle">Laboratório de Misturas Asfálticas - LMP | INCT-Infra | UFC</p>
+        <div class="coord-info">
+          <strong>Coordenação:</strong> Jorge Lucas (<a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a>)<br>
+          <strong>Técnico de Laboratório:</strong> Rômulo Jacome (<a href="mailto:romulojacome@yahoo.com.br">romulojacome@yahoo.com.br</a>)<br>
+          <strong>Técnico de Equipamentos:</strong> Hermano Barreto (<a href="mailto:hermano@det.ufc.br">hermano@det.ufc.br</a>)
         </div>
-        <nav class="nav-tabs">
-            <button class="tab-link active" onclick="openTab(event, 'inicio')">INÍCIO</button>
-            <button class="tab-link" onclick="openTab(event, 'caracterizacao')">CARACTERIZAÇÃO</button>
-            <button class="tab-link" onclick="openTab(event, 'ensaios')">ENSAIOS</button>
-            <button class="tab-link" onclick="openTab(event, 'aulas')">AULAS</button>
-        </nav>
-    </header>
+        <span class="footer-tag">
+          © 2026 | <img src="img/lmp.jpeg" alt="LMP" class="footer-logo"> | Todos os direitos reservados
+        </span>
+      </div>
+    </div>
+  </header>
 
-    <main class="container">
-        
-        <section id="inicio" class="tab-content active">
-            <div class="welcome-card">
-                <h2>Bem-vindo ao Sistema de Reservas</h2>
-                <p>O LMP é um espaço destinado à pesquisa e ensino. Siga as orientações abaixo para o uso correto:</p>
-                <ul class="instrucoes-lista">
-                    <li>As reservas devem ser feitas com no mínimo 24h de antecedência.</li>
-                    <li>O uso da Estufa é compartilhado, mas as dosagens têm prioridade.</li>
-                    <li>Mantenha a organização e limpeza após o término dos ensaios.</li>
-                    <li>Dúvidas: <a href="mailto:jorgelucas@det.ufc.br">jorgelucas@det.ufc.br</a></li>
-                </ul>
-            </div>
+  <main id="main">
+
+    <!-- TELA INICIAL -->
+    <section id="selecao-inicial" aria-label="Escolha de categoria">
+      <button type="button" class="categoria-card" data-categoria="CARACTERIZAÇÃO DE MATERIAIS">
+        <span class="icon-grande" aria-hidden="true">🔬</span>
+        <h3>Caracterização de Materiais</h3>
+        <p class="categoria-desc">Ensaios de granulometria, dosagem, densidade, adesividade e mais.</p>
+      </button>
+      <button type="button" class="categoria-card" data-categoria="ENSAIOS MECÂNICOS">
+        <span class="icon-grande" aria-hidden="true">🏗️</span>
+        <h3>Ensaios Mecânicos</h3>
+        <p class="categoria-desc">Prensas Marshall, UTM-25, UTM-30, MTS e RiO.</p>
+      </button>
+      <button type="button" class="categoria-card" data-categoria="USO DO LABORATÓRIO PARA AULAS">
+        <span class="icon-grande" aria-hidden="true">🎓</span>
+        <h3>Uso para Aulas</h3>
+        <p class="categoria-desc">Reserva do laboratório para demonstrações didáticas.</p>
+      </button>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div id="conteudo-principal" hidden>
+      <div class="container">
+        <button type="button" class="btn-voltar" id="btn-voltar" aria-label="Voltar à tela inicial">
+          <span aria-hidden="true">←</span> Voltar ao início
+        </button>
+
+        <section class="info-section" aria-label="Informações e instruções">
+          <div class="card info-geral">
+            <h3><span class="icon" aria-hidden="true">ℹ️</span> Informações Gerais</h3>
+            <ul id="lista-info-geral"></ul>
+          </div>
+          <div class="card instrucoes" id="container-instrucoes">
+            <h3><span class="icon" aria-hidden="true">📝</span> Instruções</h3>
+            <p id="texto-instrucoes">Selecione uma categoria para continuar.</p>
+          </div>
         </section>
 
-        <section id="caracterizacao" class="tab-content">
-            <h3 class="section-title">➤ SELECIONE A CARACTERIZAÇÃO</h3>
-            <div class="cards-container" id="container-caracterizacao">
-                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Dosagem Marshall', 'Estufa, Compactador Marshall', 'img/dnit-043.pdf')">
-                    <img src="img/Marshall.jpeg" alt="Marshall">
-                    <div class="info"><h5>1 - Dosagem Marshall</h5></div>
-                </div>
-                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Secagem', 'Estufa', '#')">
-                    <img src="img/estufa.jpeg" alt="Secagem">
-                    <div class="info"><h5>13 - Secagem de material</h5></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="ensaios" class="tab-content">
-            <h3 class="section-title">➤ RESERVA DE EQUIPAMENTOS ESPECÍFICOS</h3>
-            <div class="cards-container">
-                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Prensa Lottman', 'Prensa, Banho-maria', '#')">
-                    <div class="info"><h5>Resistência à Tração (Lottman)</h5></div>
-                </div>
-                <div class="ensaio-card" onclick="selecionarProcedimento(this, 'Módulo de Resiliência', 'Máquina Universal', '#')">
-                    <div class="info"><h5>Módulo de Resiliência</h5></div>
-                </div>
-                </div>
-        </section>
-
-        <section id="aulas" class="tab-content">
-            <h3 class="section-title">➤ RESERVA PARA AULAS (GRADUAÇÃO/PÓS)</h3>
-            <div class="form-aula">
-                <label>Disciplina:</label>
-                <input type="text" id="disciplina-aula" placeholder="Ex: Infraestrutura de Transportes">
-                <p>Selecione os horários na agenda abaixo para bloquear o laboratório para a turma.</p>
-            </div>
-        </section>
-
-        <div id="area-reserva" class="reserva-footer" style="display:none;">
-            <hr>
-            <div class="form-grid-inputs">
-                <div class="input-group">
-                    <label>Seu Nome</label>
-                    <input type="text" id="nome" placeholder="Seu nome completo">
-                </div>
-                <div class="input-group">
-                    <label>Orientador</label>
-                    <input type="text" id="orientador" placeholder="Nome do Professor">
-                </div>
-                <div class="input-group">
-                    <label>Data do Uso</label>
-                    <input type="date" id="data">
-                </div>
+        <section class="booking-section card" aria-label="Formulário de agendamento">
+          <form id="form-agendamento" novalidate>
+            <div class="form-grid">
+              <div class="input-group">
+                <label for="nome">Nome Completo <span class="req" aria-label="obrigatório">*</span></label>
+                <input type="text" id="nome" name="nome" required autocomplete="name" minlength="3">
+                <small class="erro-campo" id="erro-nome"></small>
+              </div>
+              <div class="input-group">
+                <label for="email">E-mail <span class="req">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                       placeholder="seu.email@ufc.br">
+                <small class="erro-campo" id="erro-email"></small>
+              </div>
+              <div class="input-group campos-extras" hidden>
+                <label for="orientador">Orientador</label>
+                <input type="text" id="orientador" name="orientador" autocomplete="off">
+              </div>
+              <div class="input-group campos-extras" hidden>
+                <label for="projeto">Projeto/Órgão</label>
+                <input type="text" id="projeto" name="projeto" autocomplete="off">
+              </div>
+              <div id="grupo-qtd-alunos" class="input-group" hidden>
+                <label for="qtd-alunos">Número de Alunos <span class="req">*</span></label>
+                <input type="number" id="qtd-alunos" name="qtd-alunos" min="1" max="100">
+              </div>
+              <div class="input-group">
+                <label for="data">Data do Uso <span class="req">*</span></label>
+                <input type="date" id="data" name="data" required>
+                <small class="erro-campo" id="erro-data"></small>
+              </div>
+              <div class="input-group">
+                <label for="categoria-display">Categoria</label>
+                <input type="text" id="categoria-display" readonly tabindex="-1">
+              </div>
             </div>
 
-            <div id="detalhes-selecao" class="detalhes-ensaio">
-                <p id="info-equipamentos"></p>
+            <h4 id="titulo-selecao-cards" class="section-title-cards">
+              <span aria-hidden="true">➤</span> Selecione o equipamento ou procedimento
+            </h4>
+
+            <div id="container-cards-padrao" class="cards-container" role="list"></div>
+            <div id="container-lista-aulas" class="modo-lista-aulas" hidden></div>
+
+            <div id="container-detalhes" class="detalhes-ensaio" hidden>
+              <div class="detalhes-grid">
+                <div id="opcoes-estado-mistura" class="detalhes-item full-width" hidden>
+                  <label>Estado da Mistura:</label>
+                  <div class="grupo-botoes" role="group" aria-label="Estado da mistura">
+                    <button type="button" class="btn-opcao" data-subtipo="Massa Solta">Massa Solta</button>
+                    <button type="button" class="btn-opcao" data-subtipo="Mistura Compactada">Mistura Compactada</button>
+                  </div>
+                </div>
+                <div class="detalhes-item">
+                  <label for="qtd-amostras">Qtd. Amostras:</label>
+                  <input type="number" id="qtd-amostras" class="input-detalhe" value="1" min="1" max="50">
+                </div>
+                <div class="detalhes-item full-width">
+                  <label for="obs-ensaio">Observações:</label>
+                  <input type="text" id="obs-ensaio" class="input-detalhe" placeholder="Notas adicionais (opcional)" maxlength="200">
+                </div>
+              </div>
             </div>
 
-            <div class="action-bar">
-                <input type="password" id="senha-lab" placeholder="Senha do LAB">
-                <button onclick="reservarLote()" class="btn-confirmar-final">Confirmar Reserva</button>
+            <input type="hidden" id="maquina" name="maquina" value="">
+
+            <div id="caixa-equipamentos" class="equipamentos-info" hidden>
+              <h4><span aria-hidden="true">🛠️</span> Equipamentos / Normas</h4>
+              <p id="lista-equipamentos"></p>
             </div>
 
-            <div class="table-section">
-                <table>
-                    <thead>
-                        <tr><th>Horário</th><th>Status</th><th>Selecionar</th></tr>
-                    </thead>
-                    <tbody id="corpo-agenda"></tbody>
+            <section class="table-section" aria-label="Horários disponíveis">
+              <div class="table-header">
+                <h4><span aria-hidden="true">🕐</span> Horários do dia selecionado</h4>
+                <div id="status-horarios" class="status-horarios" role="status" aria-live="polite"></div>
+              </div>
+              <div class="table-wrapper">
+                <table id="tabela-horarios">
+                  <thead>
+                    <tr>
+                      <th scope="col">Horário</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Selecionar</th>
+                    </tr>
+                  </thead>
+                  <tbody id="corpo-agenda">
+                    <tr><td colspan="3" class="placeholder-horarios">Selecione uma data para ver os horários.</td></tr>
+                  </tbody>
                 </table>
+              </div>
+            </section>
+
+            <section id="resumo-agendamento" class="resumo-agendamento" hidden aria-label="Resumo do agendamento">
+              <h4><span aria-hidden="true">📋</span> Resumo do agendamento</h4>
+              <ul id="lista-resumo"></ul>
+            </section>
+
+            <div id="area-acao" class="action-area">
+              <button type="submit" id="btn-confirmar" class="btn-primario">
+                Confirmar Agendamento
+              </button>
             </div>
-        </div>
 
-    </main>
+            <div id="mensagem-feedback" class="mensagem-feedback" hidden role="alert"></div>
+          </form>
+        </section>
 
-    <input type="hidden" id="item-selecionado">
-    <script src="script.js"></script>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
+
