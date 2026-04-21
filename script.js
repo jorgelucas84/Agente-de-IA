@@ -366,4 +366,120 @@
     });
 
     const totalLivres = (CONFIG.HORA_FINAL - CONFIG.HORA_INICIAL + 1) - ocupados.size;
-    statusEl.textContent = `${totalLivres} horário(
+    statusEl.textContent = `${totalLivres} horário(s) disponível(is) em ${formatarData(data)}.`;
+  }
+
+  // ---------- Resumo ----------
+  function atualizarResumo() {
+    const horarios = Array.from($$('input[name="selecionar-hora"]:checked')).map(c => c.value);
+    state.horariosSelecionados = horarios;
+
+    const resumo = $('#resumo-agendamento');
+    const lista = $('#lista-resumo');
+
+    let detalhes = '';
+    if (state.categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+      const sel = Array.from($$('.check-ensaio-aula:checked')).map(c => c.value);
+      const qtdAlunos = $('#qtd-alunos').value || '0';
+      detalhes = `[AULA] Alunos: ${qtdAlunos} | Ensaios: ${sel.join(', ') || 'nenhum'}`;
+      $('#maquina').value = detalhes;
+    } else {
+      const qtd = $('#qtd-amostras').value || '1';
+      const obs = $('#obs-ensaio').value.trim();
+      detalhes = `${state.ensaioSelecionado || '(nenhum)'}${state.subtipoSelecionado} (${qtd} amostras)`;
+      if (obs) detalhes += ` [OBS: ${obs}]`;
+      $('#maquina').value = detalhes;
+    }
+
+    const algoSelecionado = (
+      state.ensaioSelecionado ||
+      $$('.check-ensaio-aula:checked').length > 0
+    );
+
+    if (horarios.length && algoSelecionado) {
+      lista.innerHTML = `
+        <li><strong>Categoria:</strong> ${state.categoriaAtiva}</li>
+        <li><strong>Detalhes:</strong> ${detalhes}</li>
+        <li><strong>Data:</strong> ${formatarData($('#data').value) || '—'}</li>
+        <li><strong>Horários:</strong> ${horarios.join(', ')}</li>
+      `;
+      resumo.hidden = false;
+    } else {
+      resumo.hidden = true;
+    }
+  }
+
+  // ---------- Submit ----------
+  function reservarSelecionados() {
+    // Validações
+    const nome = $('#nome').value.trim();
+    const email = $('#email').value.trim();
+    const data = $('#data').value;
+    const horarios = Array.from($$('input[name="selecionar-hora"]:checked')).map(c => c.value);
+
+    let temErro = false;
+
+    if (nome.length < 3) { setErro('nome', 'Informe seu nome completo.'); temErro = true; }
+    else setErro('nome', '');
+
+    const re = validarEmail(email);
+    if (!re.ok) { setErro('email', re.msg); temErro = true; } else setErro('email', '');
+
+    const rd = validarData(data);
+    if (!rd.ok) { setErro('data', rd.msg); temErro = true; } else setErro('data', '');
+
+    if (horarios.length === 0) {
+      mostrarFeedback('Selecione pelo menos um horário.', 'erro');
+      temErro = true;
+    }
+
+    if (state.categoriaAtiva === 'USO DO LABORATÓRIO PARA AULAS') {
+      const qtd = parseInt($('#qtd-alunos').value, 10);
+      const ensaiosAula = $$('.check-ensaio-aula:checked').length;
+      if (!qtd || qtd < 1) {
+        mostrarFeedback('Informe a quantidade de alunos.', 'erro'); temErro = true;
+      } else if (ensaiosAula === 0) {
+        mostrarFeedback('Marque ao menos um ensaio para a aula.', 'erro'); temErro = true;
+      }
+    } else if (!state.ensaioSelecionado) {
+      mostrarFeedback('Escolha um equipamento ou procedimento.', 'erro');
+      temErro = true;
+    }
+
+    if (temErro) return;
+
+    // Monta mensagem
+    const ID_UNICO = 'ID-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const numeroDestino = CONFIG.CONTATOS[state.categoriaAtiva] || CONFIG.CONTATOS['CARACTERIZAÇÃO DE MATERIAIS'];
+    const detalhes = $('#maquina').value;
+
+    let mensagem = '🔬 *Novo Agendamento LMP*\n\n';
+    mensagem += `*Nome:* ${nome}\n`;
+    mensagem += `*E-mail:* ${email}\n`;
+    if ($('#orientador').value) mensagem += `*Orientador:* ${$('#orientador').value}\n`;
+    if ($('#projeto').value) mensagem += `*Projeto/Órgão:* ${$('#projeto').value}\n`;
+    mensagem += `*Categoria:* ${state.categoriaAtiva}\n`;
+    mensagem += `*Detalhes:* ${detalhes}\n`;
+    mensagem += `*Data:* ${formatarData(data)}\n`;
+    mensagem += `*Horários:* ${horarios.join(', ')}\n\n`;
+    mensagem += `*ID:* ${ID_UNICO}\n\n`;
+    mensagem += `✅ ACEITAR: ${CONFIG.APPS_SCRIPT_URL}?id=${ID_UNICO}&acao=Aceito\n`;
+    mensagem += `❌ RECUSAR: ${CONFIG.APPS_SCRIPT_URL}?id=${ID_UNICO}&acao=Recusado`;
+
+    const urlZap = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
+
+    // Substitui o botão por um link de WhatsApp
+    const areaAcao = $('#area-acao');
+    areaAcao.innerHTML = `
+      <a href="${urlZap}" target="_blank" rel="noopener" class="btn-whatsapp">
+        <span aria-hidden="true">📱</span> Enviar pedido via WhatsApp
+      </a>
+      <button type="button" class="btn-voltar" id="btn-novo-agendamento">Fazer outro agendamento</button>
+    `;
+    $('#btn-novo-agendamento').addEventListener('click', voltarInicio);
+
+    mostrarFeedback('Pedido pronto! Clique no botão verde para enviar pelo WhatsApp ao responsável.', 'sucesso');
+    $('#resumo-agendamento').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+})();
