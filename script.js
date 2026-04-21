@@ -242,8 +242,6 @@
       });
     }
 
-    // Carrega a tabela de horários já com a data de hoje (ou a próxima útil),
-    // assim o usuário já vê os checkboxes para marcar.
     if (!$('#data').value) {
       const proxima = proximoDiaUtil();
       $('#data').value = proxima;
@@ -272,6 +270,14 @@
     state.horariosSelecionados = [];
     $('#resumo-agendamento').hidden = true;
     $('#mensagem-feedback').hidden = true;
+
+    // Restaura o botão de confirmar caso tenha sido substituído.
+    const areaAcao = $('#area-acao');
+    areaAcao.innerHTML = `
+      <button type="submit" id="btn-confirmar" class="btn-primario">
+        Confirmar Agendamento
+      </button>
+    `;
   }
 
   // ---------- Seleções ----------
@@ -327,7 +333,6 @@
     corpo.innerHTML = `<tr><td colspan="3" class="placeholder-horarios"><span class="spinner"></span>Carregando horários...</td></tr>`;
     statusEl.textContent = '';
 
-    // Em produção, aqui você consultaria o Apps Script para saber horários ocupados.
     let ocupados = new Set();
     try {
       // const r = await fetch(`${CONFIG.APPS_SCRIPT_URL}?acao=listar&data=${encodeURIComponent(data)}`);
@@ -410,7 +415,6 @@
 
   // ---------- Submit ----------
   function reservarSelecionados() {
-    // Validações
     const nome = $('#nome').value.trim();
     const email = $('#email').value.trim();
     const data = $('#data').value;
@@ -467,18 +471,35 @@
 
     const urlZap = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
 
-    // Substitui o botão por um link de WhatsApp
+    // Abre o WhatsApp imediatamente — o agendamento só é efetivado quando
+    // a pessoa enviar a mensagem ao responsável.
+    const janela = window.open(urlZap, '_blank', 'noopener');
+
+    if (!janela) {
+      const areaAcao = $('#area-acao');
+      areaAcao.innerHTML = `
+        <a href="${urlZap}" target="_blank" rel="noopener" class="btn-whatsapp" id="link-zap-manual">
+          <span aria-hidden="true">\uD83D\uDCF1</span> Abrir WhatsApp para enviar o pedido
+        </a>
+      `;
+      mostrarFeedback('Seu navegador bloqueou a janela. Clique no botão verde para abrir o WhatsApp e enviar o pedido — o agendamento só será confirmado após o envio.', 'erro');
+      $('#link-zap-manual').addEventListener('click', () => {
+        setTimeout(habilitarNovoAgendamento, 1500);
+      });
+    } else {
+      habilitarNovoAgendamento();
+    }
+
+    $('#resumo-agendamento').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function habilitarNovoAgendamento() {
     const areaAcao = $('#area-acao');
     areaAcao.innerHTML = `
-      <a href="${urlZap}" target="_blank" rel="noopener" class="btn-whatsapp">
-        <span aria-hidden="true">\uD83D\uDCF1</span> Enviar pedido via WhatsApp
-      </a>
       <button type="button" class="btn-voltar" id="btn-novo-agendamento">Fazer outro agendamento</button>
     `;
     $('#btn-novo-agendamento').addEventListener('click', voltarInicio);
-
-    mostrarFeedback('Pedido pronto! Clique no botão verde para enviar pelo WhatsApp ao responsável.', 'sucesso');
-    $('#resumo-agendamento').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    mostrarFeedback('Envie a mensagem no WhatsApp para concluir seu agendamento. Sem o envio, a reserva não é registrada.', 'sucesso');
   }
 
 })();
